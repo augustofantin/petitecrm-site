@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <meta name="referrer" content="no-referrer" />
+  <title>PetiteCRM — Nova senha</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .box { width: 100%; max-width: 420px; }
+    .box h1 { font-size: 22px; text-align: center; }
+    label { display: block; font-size: 14px; margin: 14px 0 4px; color: #7C4A42; }
+    input {
+      width: 100%; padding: 12px 14px; font-size: 16px; color: #541F19;
+      border: 1px solid #E6C5BD; border-radius: 12px; background: #FFFFFF;
+    }
+    input:focus { outline: 2px solid #C96C76; outline-offset: 1px; }
+    button {
+      width: 100%; margin-top: 20px; padding: 13px; font-size: 16px; font-weight: 700;
+      color: #FFFFFF; background: #C96C76; border: 0; border-radius: 999px; cursor: pointer;
+    }
+    button:disabled { opacity: .6; cursor: default; }
+    .msg { margin-top: 14px; padding: 10px 14px; border-radius: 12px; font-size: 14px; }
+    .err { background: #FFD2C2; color: #541F19; }
+    .ok { background: #C8EAD9; color: #541F19; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="box card">
+    <h1>Criar nova senha</h1>
+
+    <p id="loading">Verificando o link...</p>
+
+    <p id="invalid" class="msg err" hidden>
+      Este link é inválido ou expirou. Volte ao aplicativo PetiteCRM e peça um novo em
+      <strong>Esqueci minha senha</strong>.
+    </p>
+
+    <form id="form" hidden>
+      <label for="password">Nova senha</label>
+      <input id="password" type="password" autocomplete="new-password" minlength="6" required />
+      <label for="confirm">Confirmar senha</label>
+      <input id="confirm" type="password" autocomplete="new-password" minlength="6" required />
+      <p id="error" class="msg err" hidden></p>
+      <button id="submit" type="submit">Salvar nova senha</button>
+    </form>
+
+    <p id="done" class="msg ok" hidden>
+      Senha alterada com sucesso. Abra o aplicativo PetiteCRM e entre com a nova senha.
+    </p>
+  </div>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"
+    integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o"
+    crossorigin="anonymous"></script>
+  <script>
+    // Chave publica (publishable) do Supabase: a mesma que vai em todo APK; nao e segredo.
+    var SUPABASE_URL = 'https://majgiisgzoeeiojpmdre.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_emJPSTO5dwWdqLCWGtb9Lw_XbmJhS3B';
+
+    var $ = function (id) { return document.getElementById(id); };
+    function show(id) {
+      ['loading', 'invalid', 'form', 'done'].forEach(function (name) {
+        $(name).hidden = name !== id;
+      });
+    }
+
+    // Erro no link (expirado, ja usado): o Supabase manda #error=...&error_code=...
+    var hasLinkError = /[#&]error=/.test(window.location.hash);
+    var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { flowType: 'implicit', persistSession: false, detectSessionInUrl: true },
+    });
+    var recovering = false;
+
+    client.auth.onAuthStateChange(function (event) {
+      if (event === 'PASSWORD_RECOVERY') {
+        recovering = true;
+        // Tira o token da barra de enderecos.
+        history.replaceState(null, '', window.location.pathname);
+        show('form');
+        $('password').focus();
+      }
+    });
+
+    setTimeout(function () {
+      if (!recovering) show('invalid');
+    }, hasLinkError ? 0 : 4000);
+
+    $('form').addEventListener('submit', function (event) {
+      event.preventDefault();
+      var password = $('password').value;
+      var error = $('error');
+      error.hidden = true;
+      if (password.length < 6) {
+        error.textContent = 'Use pelo menos 6 caracteres.';
+        error.hidden = false;
+        return;
+      }
+      if (password !== $('confirm').value) {
+        error.textContent = 'As senhas não conferem.';
+        error.hidden = false;
+        return;
+      }
+      $('submit').disabled = true;
+      client.auth.updateUser({ password: password }).then(function (result) {
+        if (result.error) {
+          error.textContent = 'Não foi possível salvar a senha. Peça um novo link no aplicativo.';
+          error.hidden = false;
+          $('submit').disabled = false;
+          return;
+        }
+        client.auth.signOut();
+        show('done');
+      });
+    });
+  </script>
+</body>
+</html>
