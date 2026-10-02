@@ -51,3 +51,7 @@ a { color: #C96C76; }
 footer { border-top: 1px solid #E6C5BD; background: #FFFFFF; padding: 20px 0; font-size: 14px; }
 footer a { margin-right: 16px; }
 .updated { font-size: 14px; color: #7C4A42; }
+.cta { margin-top: 14px; }
+.btn { display: inline-block; background: #C96C76; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 10px 20px; border-radius: 999px; }
+.btn:hover { background: #B35B65; }
+code { background: #F9F6EF; padding: 1px 6px; border-radius: 6px; }
