@@ -55,3 +55,9 @@ footer a { margin-right: 16px; }
 .btn { display: inline-block; background: #C96C76; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 10px 20px; border-radius: 999px; }
 .btn:hover { background: #B35B65; }
 code { background: #F9F6EF; padding: 1px 6px; border-radius: 6px; }
+ol { padding-left: 22px; }
+ol li { margin-bottom: 4px; }
+.versao { font-weight: 700; }
+.peq { font-size: 14px; margin-top: 10px; }
+.espaco { margin-top: 10px; }
+.note a { color: #541F19; }

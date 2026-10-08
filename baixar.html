@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Baixar o PetiteCRM — Android e Windows</title>
+  <meta name="description" content="Baixe o PetiteCRM para Android (.apk) e Windows (.zip) e veja como instalar e atualizar." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="./">PetiteCRM</a>
+      <nav>
+        <a href="./#recursos">Recursos</a>
+        <a href="./#planos">Planos</a>
+        <a href="baixar.html">Baixar</a>
+        <a href="termos.html">Termos de uso</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Baixar o PetiteCRM</h1>
+      <p>Escolha a versão para o seu aparelho. O download começa direto, sem passar por outra página.</p>
+      <p id="versao" class="versao"></p>
+    </section>
+
+    <section>
+      <div class="grid">
+        <div class="card">
+          <h3>Android</h3>
+          <p>Arquivo <code>.apk</code> <span id="tam-apk"></span></p>
+          <p class="cta"><a id="link-apk" class="btn" href="https://github.com/augustofantin/petitecrm-releases/releases/latest/download/app-arm64-v8a-release.apk">Baixar para Android</a></p>
+          <p class="peq">Para celulares e tablets Android atuais (64 bits). Não serve em aparelhos muito antigos, de 32 bits.</p>
+        </div>
+        <div class="card">
+          <h3>Windows</h3>
+          <p>Arquivo <code>.zip</code> <span id="tam-win"></span></p>
+          <p class="cta"><a id="link-win" class="btn" href="https://github.com/augustofantin/petitecrm-releases/releases/latest">Baixar para Windows</a></p>
+          <p class="peq">Para computadores com Windows 10 ou 11 (64 bits).</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="note">
+      <strong>Por que o Android mostra avisos de segurança?</strong><br />
+      O PetiteCRM está em processo de validação nas lojas de aplicativos. Por isso, enquanto isso não
+      termina, o Android mostra avisos de segurança ao baixar, instalar e atualizar: pode pedir para
+      permitir a instalação de apps de fora da loja e mostrar um alerta do Google Play Protect. É
+      esperado. Confirme que o arquivo veio deste site e siga em frente.
+    </div>
+
+    <section>
+      <h2>Instalar no Android</h2>
+      <ol>
+        <li>Toque em <strong>Baixar para Android</strong>. Se o navegador avisar que o tipo de arquivo pode ser perigoso, confirme que quer manter o download.</li>
+        <li>Abra o arquivo baixado. Se o Android pedir permissão para instalar apps desta origem, permita.</li>
+        <li>Se aparecer um alerta de segurança, escolha a opção de instalar mesmo assim.</li>
+        <li>Abra o PetiteCRM e entre com a sua conta.</li>
+      </ol>
+      <h2>Atualizar no Android</h2>
+      <p>Baixe o arquivo mais recente e instale por cima da versão anterior. Seus dados ficam na nuvem
+      e nada se perde. Os mesmos avisos de segurança podem aparecer de novo.</p>
+      <p class="espaco"><em>Em breve: imagens de cada tela do passo a passo.</em></p>
+    </section>
+
+    <section>
+      <h2>Instalar no Windows</h2>
+      <ol>
+        <li>Baixe o arquivo <code>.zip</code>.</li>
+        <li>Clique com o botão direito no arquivo e escolha <strong>Extrair tudo</strong>.</li>
+        <li>Abra a pasta extraída e execute o <code>PetiteCRM.exe</code>. Mantenha todos os arquivos da pasta juntos.</li>
+      </ol>
+      <h2>Atualizar no Windows</h2>
+      <p>Feche o PetiteCRM, baixe o zip mais recente, extraia e substitua a pasta antiga pela nova.
+      Seus dados ficam na nuvem e nada se perde.</p>
+    </section>
+
+    <div class="note">Dúvidas ou problemas na instalação: <a href="mailto:milhazerocwb@gmail.com">milhazerocwb@gmail.com</a>.</div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <a href="termos.html">Termos de uso</a>
+      <a href="privacidade.html">Política de privacidade</a>
+      <span class="updated">© PetiteCRM</span>
+    </div>
+  </footer>
+
+  <script>
+    // Busca a versão mais recente e aponta os botões direto para os arquivos.
+    // Sem JavaScript (ou se a consulta falhar), os links acima continuam funcionando.
+    (function () {
+      function mb(bytes) { return '(' + (bytes / 1048576).toFixed(1).replace('.', ',') + ' MB)'; }
+      fetch('https://api.github.com/repos/augustofantin/petitecrm-releases/releases/latest')
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (rel) {
+          var apk = null, zip = null;
+          (rel.assets || []).forEach(function (a) {
+            if (/\.apk$/i.test(a.name)) apk = a;
+            else if (/windows.*\.zip$/i.test(a.name)) zip = a;
+          });
+          if (apk) {
+            document.getElementById('link-apk').href = apk.browser_download_url;
+            document.getElementById('tam-apk').textContent = mb(apk.size);
+          }
+          if (zip) {
+            document.getElementById('link-win').href = zip.browser_download_url;
+            document.getElementById('tam-win').textContent = mb(zip.size);
+          }
+          if (rel.tag_name) {
+            document.getElementById('versao').textContent = 'Versão mais recente: ' + rel.tag_name.replace(/^v/, '');
+          }
+        })
+        .catch(function () {});
+    })();
+  </script>
+</body>
+</html>

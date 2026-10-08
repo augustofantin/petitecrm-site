@@ -6,6 +6,8 @@ Páginas estáticas do PetiteCRM servidas pelo GitHub Pages
 - `email-confirmado.html`: destino do link de confirmação de cadastro
   (Site URL / Redirect URL do Supabase Auth).
 - `index.html`: página inicial (o que é o PetiteCRM, recursos e planos "sob consulta").
+- `baixar.html`: downloads diretos (Android .apk e Windows .zip) e passo a passo; busca a última versão
+  do repo petitecrm-releases pela API do GitHub ao abrir, então não precisa editar a cada release.
 - `termos.html`: termos de uso.
 - `privacidade.html`: política de privacidade (LGPD).
 - `style.css`: estilo compartilhado das páginas acima.
